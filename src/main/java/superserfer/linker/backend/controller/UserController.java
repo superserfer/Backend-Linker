@@ -1,10 +1,8 @@
 package superserfer.linker.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import superserfer.linker.backend.model.User;
 import superserfer.linker.backend.service.IUserService;
 
@@ -18,6 +16,11 @@ public class UserController {
     @GetMapping("/{username}")
     public User findUserByUsername(@PathVariable String username) {
         return userService.findByUsername(username);
+    }
+
+    @PostMapping
+    public User createUser(@Validated @RequestBody User newUser) {
+        return userService.create(newUser);
     }
 
 

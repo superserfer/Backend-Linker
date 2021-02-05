@@ -1,5 +1,8 @@
 package superserfer.linker.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mongodb.lang.NonNull;
+import com.mongodb.lang.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -10,14 +13,18 @@ import org.springframework.data.mongodb.core.index.Indexed;
 public class User {
 
     @Id
-    public String id;
+    private String id;
 
-    public String username;
-    public String email;
+    private String username;
 
-    public User(String username, String email) {
+    private String email;
+    
+    private String password;
+
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
+        this.password = password;
     }
 
     public User() {
