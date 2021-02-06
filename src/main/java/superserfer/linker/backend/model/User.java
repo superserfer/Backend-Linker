@@ -1,6 +1,7 @@
 package superserfer.linker.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"password"},allowSetters = true)
 public class User {
 
     @Id
@@ -18,7 +20,8 @@ public class User {
     private String username;
 
     private String email;
-    
+
+    @JsonIgnoreProperties("password")
     private String password;
 
     public User(String username, String email, String password) {
