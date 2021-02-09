@@ -23,5 +23,10 @@ public class UserController {
         return userService.create(newUser);
     }
 
+    @PutMapping
+    public User updateUser(@Validated @RequestBody User user) {
+        return userService.update(user);
+    }
+
 
 }
