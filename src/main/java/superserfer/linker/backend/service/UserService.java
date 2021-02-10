@@ -1,6 +1,7 @@
 package superserfer.linker.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import superserfer.linker.backend.exception.DuplicateIndexException;
@@ -19,6 +20,9 @@ public class UserService implements IUserService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Value("${security.pepper}")
+    private String pepper;
+
     @Override
     public User create(User newUser) {
         //Check if username already exist
@@ -30,8 +34,8 @@ public class UserService implements IUserService{
         //Check if all attributes are here
         if (newUser.getUsername() == null || newUser.getEmail() == null || newUser.getPassword() == null)
             throw new MissingAttributeException("Your user has missing attributes.");
-        //encodes password
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        //encodes password and add salt
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword() + pepper));
         return userRepository.save(newUser);
     }
 
@@ -53,7 +57,7 @@ public class UserService implements IUserService{
         Optional<User> oldUserOptional = userRepository.findById(user.getId());
         //Check if User exists
         if (oldUserOptional.isEmpty())
-            throw new NoSuchElementFoundException("User doesn't exist ");
+            throw new NoSuchElementFoundException("User not found.");
         User oldUser = oldUserOptional.get();
         //Check if new Username is already taken
         if (!oldUser.getUsername().equals(user.getUsername()) & userRepository.findByUsername(user.getUsername()) != null)
@@ -77,7 +81,7 @@ public class UserService implements IUserService{
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null)
-            throw new NoSuchElementFoundException(String.format("'%s doesn't exist.'",username));
+            throw new NoSuchElementFoundException(String.format("User with username: '%s' not found.",username));
          return user;
     }
 }

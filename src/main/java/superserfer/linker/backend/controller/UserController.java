@@ -18,6 +18,11 @@ public class UserController {
         return userService.findByUsername(username);
     }
 
+    @GetMapping("/{id}")
+    public User findUserById(@PathVariable String id){
+        return userService.findById(id);
+    }
+
     @PostMapping
     public User createUser(@Validated @RequestBody User newUser) {
         return userService.create(newUser);
@@ -28,5 +33,8 @@ public class UserController {
         return userService.update(user);
     }
 
-
+    @DeleteMapping
+    public void deleteUser(@Validated @RequestBody User user){
+        userService.delete(user);
+    }
 }
