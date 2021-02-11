@@ -46,6 +46,11 @@ public class AuthenticationService implements IAuthenticationService{
 
     }
 
+    @Override
+    public User getUserByJsonWebToken(JsonWebToken jsonWebToken) {
+        return null;
+    }
+
     private JsonWebToken createJsonWebToken(User user){
         String jwt = JWT.create()
                 .withSubject(user.getUsername())

@@ -11,4 +11,7 @@ public class JsonWebToken {
     public JsonWebToken(String jwt) {
         this.jwt = jwt;
     }
+
+    public JsonWebToken() {
+    }
 }

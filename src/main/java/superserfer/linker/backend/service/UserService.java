@@ -74,7 +74,8 @@ public class UserService implements IUserService{
     //Methode not implemented
     @Override
     public User updatePassword(User user, String newPassword) {
-        return null;
+        user.setPassword(passwordEncoder.encode(newPassword + pepper));
+        return userRepository.save(user);
     }
 
     @Override
