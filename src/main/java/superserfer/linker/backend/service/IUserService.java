@@ -9,4 +9,5 @@ public interface IUserService {
     User update(User user);
     User updatePassword(User user,String newPassword);
     User findByUsername(String username);
+    User findByEmail(String email);
 }

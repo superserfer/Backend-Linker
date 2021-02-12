@@ -6,18 +6,20 @@ import org.springframework.web.bind.annotation.*;
 import superserfer.linker.backend.model.JsonWebToken;
 import superserfer.linker.backend.model.Login;
 import superserfer.linker.backend.model.User;
-import superserfer.linker.backend.service.AuthenticationService;
-import superserfer.linker.backend.service.UserService;
+import superserfer.linker.backend.service.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private IAuthenticationService authenticationService;
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
+
+    @Autowired
+    private IEmailService emailService;
 
     @PostMapping
     public JsonWebToken login(@Validated @RequestBody Login login) {
@@ -29,6 +31,16 @@ public class AuthenticationController {
         JsonWebToken jsonWebToken = authenticationService.authenticate(login);
         User user = userService.findByUsername(login.getUsername());
         return userService.updatePassword(user, login.getNewPassword());
+    }
+
+    @PostMapping("/forgot/username")
+    public void forgotUsername(@Validated @RequestBody Login login){
+        emailService.sendUsername(userService.findByEmail(login.getEmail()));
+    }
+
+    @PostMapping("/forgot/password")
+    public void forgotPassword(@Validated @RequestBody Login login){
+
     }
 
 }

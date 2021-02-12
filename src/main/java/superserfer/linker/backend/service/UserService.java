@@ -1,12 +1,10 @@
 package superserfer.linker.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import superserfer.linker.backend.exception.DuplicateIndexException;
-import superserfer.linker.backend.exception.MissingAttributeException;
-import superserfer.linker.backend.exception.NoSuchElementFoundException;
+
+import superserfer.linker.backend.exception.*;
 import superserfer.linker.backend.model.User;
 import superserfer.linker.backend.repository.UserRepository;
 
@@ -19,6 +17,8 @@ public class UserService implements IUserService{
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private IEmailService emailService;
 
     @Value("${security.pepper}")
     private String pepper;
@@ -34,6 +34,9 @@ public class UserService implements IUserService{
         //Check if all attributes are here
         if (newUser.getUsername() == null || newUser.getEmail() == null || newUser.getPassword() == null)
             throw new MissingAttributeException("Your user has missing attributes.");
+        //Check if Email is valid
+        if (emailService.validateEmail(newUser.getEmail()))
+            throw new WrongEmailFormatException(String.format("'%s' is not a email.",newUser.getEmail()));
         //encodes password and add salt
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword() + pepper));
         return userRepository.save(newUser);
@@ -65,6 +68,9 @@ public class UserService implements IUserService{
         //Check if new Email is already taken
         if (!oldUser.getEmail().equals(user.getEmail()) & userRepository.findByEmail(user.getEmail()) != null)
             throw new DuplicateIndexException(String.format("Email: '%s' is already in use.",user.getEmail()));
+        //Check if Email is valid
+        if (emailService.validateEmail(user.getEmail()))
+            throw new WrongEmailFormatException(String.format("'%s' is not a email.",user.getEmail()));
         //assign password from oldUser to user
         user.setPassword(oldUser.getPassword());
         return userRepository.save(user);
@@ -84,5 +90,13 @@ public class UserService implements IUserService{
         if (user == null)
             throw new NoSuchElementFoundException(String.format("User with username: '%s' not found.",username));
          return user;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            throw new NoSuchElementFoundException(String.format("User with email: '%s' not found.",email));
+        return user;
     }
 }
