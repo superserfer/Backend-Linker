@@ -35,7 +35,7 @@ public class UserService implements IUserService{
         if (newUser.getUsername() == null || newUser.getEmail() == null || newUser.getPassword() == null)
             throw new MissingAttributeException("Your user has missing attributes.");
         //Check if Email is valid
-        if (emailService.validateEmail(newUser.getEmail()))
+        if (!emailService.validateEmail(newUser.getEmail()))
             throw new WrongEmailFormatException(String.format("'%s' is not a email.",newUser.getEmail()));
         //encodes password and add salt
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword() + pepper));

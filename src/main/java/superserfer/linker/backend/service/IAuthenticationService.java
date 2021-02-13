@@ -7,4 +7,5 @@ import superserfer.linker.backend.model.User;
 public interface IAuthenticationService {
     JsonWebToken authenticate(Login login);
     User getUserByJsonWebToken(JsonWebToken jsonWebToken);
+    boolean JWTHasAuthorityToGetUser(String jwt, User user);
 }

@@ -16,9 +16,9 @@ Secondly you need to set a pepper for your password hashing
 ```
 security.pepper= here comes your pepper (at least 16 Characters)
 ```
-Then you need to at a signature for the jwt. It needed to be encoded in base64
+Then you need to at a secret for the jwt.
 ```
-security.signature= here comes your signature
+security.secret= here comes your signature
 ```
 
 ## Authors

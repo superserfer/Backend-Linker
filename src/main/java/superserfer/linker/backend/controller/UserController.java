@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import superserfer.linker.backend.model.User;
+import superserfer.linker.backend.service.IAuthenticationService;
 import superserfer.linker.backend.service.IUserService;
 
 @RestController
@@ -13,14 +14,21 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @GetMapping("/{username}")
-    public User findUserByUsername(@PathVariable String username) {
-        return userService.findByUsername(username);
+    @Autowired
+    private IAuthenticationService authenticationService;
+
+    @GetMapping("/byUsername/{username}")
+    public User findUserByUsername(@PathVariable String username,@RequestHeader("Bearer")String bearer) {
+        User user = userService.findByUsername(username);
+        authenticationService.JWTHasAuthorityToGetUser(bearer, user);
+        return user;
     }
 
-    @GetMapping("/{id}")
-    public User findUserById(@PathVariable String id){
-        return userService.findById(id);
+    @GetMapping("/byId/{id}")
+    public User findUserById(@PathVariable String id, @RequestHeader("Bearer")String bearer){
+        User user = userService.findById(id);
+        authenticationService.JWTHasAuthorityToGetUser(bearer, user);
+        return user;
     }
 
     @PostMapping
@@ -29,12 +37,16 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Validated @RequestBody User user) {
+    public User updateUser(@Validated @RequestBody User user, @RequestHeader("Bearer")String bearer) {
+        User dbUser = userService.findById(user.getId());
+        authenticationService.JWTHasAuthorityToGetUser(bearer, dbUser);
         return userService.update(user);
     }
 
     @DeleteMapping
-    public void deleteUser(@Validated @RequestBody User user){
+    public void deleteUser(@Validated @RequestBody User user, @RequestHeader("Bearer")String bearer){
+        User dbUser = userService.findById(user.getId());
+        authenticationService.JWTHasAuthorityToGetUser(bearer, dbUser);
         userService.delete(user);
     }
 }
