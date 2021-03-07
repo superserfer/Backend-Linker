@@ -7,6 +7,7 @@ import superserfer.linker.backend.model.User;
 import superserfer.linker.backend.service.IAuthenticationService;
 import superserfer.linker.backend.service.IUserService;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {

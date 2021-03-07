@@ -8,6 +8,7 @@ import superserfer.linker.backend.model.Login;
 import superserfer.linker.backend.model.User;
 import superserfer.linker.backend.service.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
